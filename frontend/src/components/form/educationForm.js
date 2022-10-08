@@ -8,109 +8,78 @@ import {
     FormControl,
     Button,
   } from "react-bootstrap";
+import IconButton from '@material-ui/core/IconButton';
+import RemoveIcon from '@material-ui/icons/Remove';
+import AddIcon from '@material-ui/icons/Add';
+import Icon from '@material-ui/core/Icon';
+import { v4 as uuidv4 } from 'uuid';
   import { useState } from "react";
 
-export const EducationForm = () => {
-      // user high school degree name
-  const [userHighSchoolDegreeName, setUserHighSchoolDegreeName] = useState("");
-  const handleUserHighSchoolDegreeName = (e) => {
-    setUserHighSchoolDegreeName(e.target.value);
-  };
-  // user high school name
-  const [userHighSchoolName, setUserHighSchoolName] = useState("");
-  const handleUserHighSchoolName = (e) => {
-    setUserHighSchoolName(e.target.value);
-  };
-  // user high school degree starting date
-  const [userHighSchoolStartingDate, setUserHighSchoolStartingDate] =
-    useState("");
-  const handleUserHighSchoolDegreeStartingDate = (e) => {
-    setUserHighSchoolStartingDate(e.target.value);
-    console.log(e.target.value);
-  };
-  // user high school degree ending date
-  const [userHighSchoolEndingDate, setUserHighSchoolEndingDate] = useState("");
-  const handleUserHighSchoolDegreeEndingDate = (e) => {
-    setUserHighSchoolEndingDate(e.target.value);
-  };
-  // user high school experience
-  const [userHighSchoolExperience, setUserHighSchoolExperience] = useState("");
-  const handleUserHighSchoolExperience = (e) => {
-    setUserHighSchoolExperience(e.target.value);
-  };
-  // user college degree name
-  const [userCollegeDegreeName, setUserCollegeDegreeName] = useState("");
-  const handleUserCollegeDegreeName = (e) => {
-    setUserCollegeDegreeName(e.target.value);
-  };
-  // user college name
-  const [userCollegeName, setUserCollegeName] = useState("");
-  const handleUserCollegeName = (e) => {
-    setUserCollegeName(e.target.value);
-  };
-  // user college degree starting date
-  const [userCollegeStartingDate, setUserCollegeStartingDate] = useState("");
-  const handleUserCollegeStartingDate = (e) => {
-    setUserCollegeStartingDate(e.target.value);
-  };
-  // user college degree ending date
-  const [userCollegeEndingDate, setUserCollegeEndingDate] = useState("");
-  const handleUserCollegeDegreeEndingDate = (e) => {
-    setUserCollegeEndingDate(e.target.value);
-  };
-  // user college experience
-  const [userCollegeExperience, setUserCollegeExperience] = useState("");
-  const handleUserCollegeExperience = (e) => {
-    setUserCollegeExperience(e.target.value);
-  };
-  // user bachelor degree name
-  const [userBachelorDegreeName, setUserBachelorDegreeName] = useState("");
-  const handleUserBachelorDegreeName = (e) => {
-    setUserBachelorDegreeName(e.target.value);
-  };
-  // user university name
-  const [userUniversityName, setUserUniversityName] = useState("");
-  const handleUserUniversityName = (e) => {
-    setUserUniversityName(e.target.value);
-  };
-  // user bachelor degree starting date
-  const [userBachelorStartingDate, setUserBachelorStartingDate] = useState("");
-  const handleUserBachelorStartingDate = (e) => {
-    setUserBachelorStartingDate(e.target.value);
-  };
-  // user bachelor degree ending date
-  const [userBachelorEndingDate, setUserBachelorEndingDate] = useState("");
-  const handleUserBachelorDegreeEndingDate = (e) => {
-    setUserBachelorEndingDate(e.target.value);
-  };
-  // user university experience
-  const [userUniversityExperience, setUserUniversityExperience] = useState("");
-  const handleUserUniversityExperience = (e) => {
-    setUserUniversityExperience(e.target.value);
-  };
+export const EducationForm = ({inputFields, setInputFields}) => {
+
+  const handleChangeInput = (id, event) => {
+    console.log(id, event.target);
+    const newInputFields = inputFields.map(i => {
+      if(id === i.id) {
+        i[event.target.name] = event.target.value
+      }
+      return i;
+    })
+    
+    setInputFields(newInputFields);
+  }
+
+  const handleAddFields = () => {
+    setInputFields([...inputFields, { id: uuidv4(),  firstName: '', lastName: '' }])
+  }
+
+  const handleRemoveFields = id => {
+    const values  = [...inputFields];
+    values.splice(values.findIndex(value => value.id === id), 1);
+    setInputFields(values);
+  }
+
   return (
     <div>
         <h1 className="text-dark font-weight-bold py-4">
-          Educational Detail (Add 2 educational details)
+          Educational Details
         </h1>
+        { inputFields.map(inputField => (
+          <div key={inputField.id}> 
+                <Form.Row>
+          <FormGroup as={Col} sm={12} md={6}>
+            <FormLabel> Education Title (School, College or Others) </FormLabel>
+            <FormControl
+              name="edutitle"
+              type="text"
+              placeholder="e.g School, College, University"
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.edutitle}
+              required
+            />
+          </FormGroup>
+
+        </Form.Row>
         <Form.Row>
           <FormGroup as={Col} sm={12} md={6}>
-            <FormLabel> High school degree </FormLabel>
+            <FormLabel> {inputField.edutitle} degree </FormLabel>
             <FormControl
+              name="edudegree"
               type="text"
               placeholder="e.g metric with computer sciences"
-              onChange={handleUserHighSchoolDegreeName}
-              value={userHighSchoolDegreeName}
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.edudegree}
               required
             />
           </FormGroup>
           <FormGroup as={Col} sm={12} md={6}>
-            <FormLabel> School Name </FormLabel>
+            <FormLabel> {inputField.edutitle} Name </FormLabel>
             <FormControl
+              name="eduinstitute"
               type="text"
               placeholder="e.g govt school"
-              onChange={handleUserHighSchoolName}
-              value={userHighSchoolName}
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.eduinstitute}
               required
             />
           </FormGroup>
@@ -119,136 +88,47 @@ export const EducationForm = () => {
           <FormGroup as={Col} sm={12} md={4}>
             <FormLabel>Starting Date</FormLabel>
             <FormControl
+              name="edustart"
               type="date"
-              onChange={handleUserHighSchoolDegreeStartingDate}
-              value={userHighSchoolStartingDate}
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.edustart}
               required
             />
           </FormGroup>
           <FormGroup as={Col} sm={12} md={4}>
             <FormLabel>Ending Date</FormLabel>
             <FormControl
+            name="eduend"
               type="date"
-              onChange={handleUserHighSchoolDegreeEndingDate}
-              value={userHighSchoolEndingDate}
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.eduend}
               required
             />
           </FormGroup>
           <FormGroup as={Col} sm={12}>
-            <FormLabel>Describe your experience</FormLabel>
+            <FormLabel>Describe your {inputField.edutitle}'s experience</FormLabel>
             <Form.Control
+            name="edudescrib"
               as="textarea"
               rows={6}
-              onChange={handleUserHighSchoolExperience}
-              value={userHighSchoolExperience}
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.edudescrib}
               required
             />
           </FormGroup>
         </Form.Row>
-        <Form.Row>
-          <FormGroup as={Col} sm={12} md={6}>
-            <FormLabel> College degree </FormLabel>
-            <FormControl
-              type="text"
-              placeholder="e.g Intermediate in computer science"
-              onChange={handleUserCollegeDegreeName}
-              value={userCollegeDegreeName}
-              required
-            />
-          </FormGroup>
-          <FormGroup as={Col} sm={12} md={6}>
-            <FormLabel> College Name </FormLabel>
-            <FormControl
-              type="text"
-              placeholder="e.g MAO College"
-              onChange={handleUserCollegeName}
-              value={userCollegeName}
-              required
-            />
-          </FormGroup>
-        </Form.Row>
-        <Form.Row>
-          <FormGroup as={Col} sm={12} md={4}>
-            <FormLabel>Starting Date</FormLabel>
-            <FormControl
-              type="date"
-              onChange={handleUserCollegeStartingDate}
-              value={userCollegeStartingDate}
-              required
-            />
-          </FormGroup>
-          <FormGroup as={Col} sm={12} md={4}>
-            <FormLabel>Ending Date</FormLabel>
-            <FormControl
-              type="date"
-              onChange={handleUserCollegeDegreeEndingDate}
-              value={userCollegeEndingDate}
-              required
-            />
-          </FormGroup>
-          <FormGroup as={Col} sm={12}>
-            <FormLabel>Describe your experience</FormLabel>
-            <Form.Control
-              as="textarea"
-              rows={6}
-              onChange={handleUserCollegeExperience}
-              value={userCollegeExperience}
-              required
-            />
-          </FormGroup>
-        </Form.Row>
-        <Form.Row>
-          <FormGroup as={Col} sm={12} md={6}>
-            <FormLabel> University degree </FormLabel>
-            <FormControl
-              type="text"
-              placeholder="e.g bachelor in computer science"
-              onChange={handleUserBachelorDegreeName}
-              value={userBachelorDegreeName}
-              required
-            />
-          </FormGroup>
-          <FormGroup as={Col} sm={12} md={6}>
-            <FormLabel> University Name </FormLabel>
-            <FormControl
-              type="text"
-              placeholder="e.g university of the punjab"
-              onChange={handleUserUniversityName}
-              value={userUniversityName}
-              required
-            />
-          </FormGroup>
-        </Form.Row>
-        <Form.Row>
-          <FormGroup as={Col} sm={12} md={4}>
-            <FormLabel>Starting Date</FormLabel>
-            <FormControl
-              type="date"
-              onChange={handleUserBachelorStartingDate}
-              value={userBachelorStartingDate}
-              required
-            />
-          </FormGroup>
-          <FormGroup as={Col} sm={12} md={4}>
-            <FormLabel>Ending Date</FormLabel>
-            <FormControl
-              type="date"
-              onChange={handleUserBachelorDegreeEndingDate}
-              value={userBachelorEndingDate}
-              required
-            />
-          </FormGroup>
-          <FormGroup as={Col} sm={12}>
-            <FormLabel>Describe your experience</FormLabel>
-            <Form.Control
-              as="textarea"
-              rows={6}
-              onChange={handleUserUniversityExperience}
-              value={userUniversityExperience}
-              required
-            />
-          </FormGroup>
-        </Form.Row>
+        <div className="text-center">
+        <IconButton disabled={inputFields.length === 1} onClick={() => handleRemoveFields(inputField.id)}>
+        <RemoveIcon />
+      </IconButton>
+      <IconButton
+        onClick={handleAddFields}
+      >
+        <AddIcon />
+      </IconButton>
+      </div>
+        </div>
+        ))}
     </div>
   )
 }

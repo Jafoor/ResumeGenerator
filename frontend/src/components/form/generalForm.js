@@ -5,97 +5,56 @@ import {
     FormGroup,
     FormLabel,
     FormControl,
-    Button,
   } from "react-bootstrap";
-  import { useState } from "react";
-  // import { Link } from "react-router-dom";
-  import axios from "axios";
-
-
   
-  const GeneralForm = () => {
+  const GeneralForm = ({inputFields, setInputFields}) => {
 
-        // first name of the person
-    const [userFirstName, setUserFirstName] = useState("");
-    const handleFirstName = (e) => {
-        setUserFirstName(e.target.value);
-    };
-    // second name of the person
-    const [userSecondName, setUserSecondName] = useState("");
-    const handleUserSecondName = (e) => {
-        setUserSecondName(e.target.value);
-    };
-    // gender of user
-    const [userGender, setUserGender] = useState("Male");
-    const handleUserGender = (e) => {
-        setUserGender(e.target.value);
-    };
-    // age of the user
-    const [userAge, setUserAge] = useState("");
-    const handleUserAge = (e) => {
-        setUserAge(e.target.value);
-    };
-    // user profession
-    const [userProfession, setUserProfession] = useState("");
-    const handleUserProfession = (e) => {
-        setUserProfession(e.target.value);
-    };
-    // user location
-    const [userLocation, setUserLocation] = useState("");
-    const handleUserLocation = (e) => {
-        setUserLocation(e.target.value);
-    };
-    // user phone number
-    const [userPhoneNumber, setUserPhoneNumber] = useState("");
-    const handleUserPhoneNumber = (e) => {
-        setUserPhoneNumber(e.target.value);
-    };
-    // user email address
-    const [userEmail, setUserEmail] = useState("");
-    const handleUserEmail = (e) => {
-        setUserEmail(e.target.value);
-    };
-    // user house address
-    const [userHouseAddress, setUserHouseAddress] = useState("");
-    const handleUserHouseAddress = (e) => {
-        setUserHouseAddress(e.target.value);
-    };
-    // user description
-    const [userProfileDescription, setUserProfileDescription] = useState("");
-    const handleUserProfileDescription = (e) => {
-        setUserProfileDescription(e.target.value);
-    };
+      const handleChangeInput = (id, event) => {
+        const newInputFields = inputFields.map(i => {
+          if(id === i.id) {
+            i[event.target.name] = event.target.value
+          }
+          return i;
+        })
+        
+        setInputFields(newInputFields);
+      }
 
     return (
       <div>
-        <h1 className="text-dark font-weight-bold py-3">General Detail</h1>
+        <h1 className="text-dark font-weight-bold py-3">General Details</h1>
+        { inputFields.map((inputField) => (
+          <div key={inputField.id}> 
         <Form.Row>
           <FormGroup as={Col} sm={12} md={4}>
             <FormLabel>First Name</FormLabel>
             <FormControl
+              name="fname"
               type="text"
               placeholder="First Name"
-              onChange={handleFirstName}
-              value={userFirstName}
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.fname}
               required
             />
           </FormGroup>
           <FormGroup as={Col} sm={12} md={4}>
             <FormLabel>Last Name</FormLabel>
             <FormControl
+              name="lastname"
               type="text"
               placeholder="Last Name"
-              onChange={handleUserSecondName}
-              value={userSecondName}
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.lastname}
               required
             />
           </FormGroup>
           <FormGroup as={Col} sm={12} md={4}>
             <FormLabel>Gender</FormLabel>
             <FormControl
+              name='gender'
               as="select"
-              onChange={handleUserGender}
-              value={userGender}
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.gender}
               required
             >
               <option value="male">Male</option>
@@ -108,30 +67,33 @@ import {
           <FormGroup as={Col} sm={12} md={4}>
             <FormLabel>Age</FormLabel>
             <FormControl
+              name="age"
               type="number"
               min="1"
-              onChange={handleUserAge}
-              value={userAge}
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.age}
               required
             />
           </FormGroup>
           <FormGroup as={Col} sm={12} md={4}>
             <FormLabel>Profession</FormLabel>
             <FormControl
+              name="profession"
               type="text"
               placeholder="e.g Full stack developer"
-              onChange={handleUserProfession}
-              value={userProfession}
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.profession}
               required
             />
           </FormGroup>
           <FormGroup as={Col} sm={12} md={4}>
-            <FormLabel>Location</FormLabel>
+            <FormLabel>Permanent Address</FormLabel>
             <FormControl
+              name="permanentaddress"
               type="text"
-              placeholder="Lahore, Pakistan"
-              onChange={handleUserLocation}
-              value={userLocation}
+              placeholder="Dhaka, Bangladesh"
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.permanentaddress}
               required
             />
           </FormGroup>
@@ -140,30 +102,33 @@ import {
           <FormGroup as={Col} sm={12} md={4}>
             <FormLabel> Mobile Phone </FormLabel>
             <FormControl
+              name='mobilenumber'
               type="number"
-              placeholder="+01 23 456 789"
-              onChange={handleUserPhoneNumber}
-              value={userPhoneNumber}
+              placeholder="+880 1846825017"
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.mobilenumber}
               required
             />
           </FormGroup>
           <FormGroup as={Col} sm={12} md={4}>
             <FormLabel> Email </FormLabel>
             <FormControl
+              name="email"
               type="email"
               placeholder="info@domain.com"
-              onChange={handleUserEmail}
-              value={userEmail}
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.email}
               required
             />
           </FormGroup>
           <FormGroup as={Col} sm={12} md={4}>
-            <FormLabel> House Address </FormLabel>
+            <FormLabel> Present Address </FormLabel>
             <FormControl
+              name="presentaddress"
               type="text"
               placeholder="House#0 St#0 street and city name"
-              onChange={handleUserHouseAddress}
-              value={userHouseAddress}
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.presentaddress}
               required
             />
           </FormGroup>
@@ -172,14 +137,17 @@ import {
           <FormGroup as={Col} sm={12}>
             <Form.Label>Describe Yourself</Form.Label>
             <Form.Control
+              name="describe"
               as="textarea"
               rows={6}
-              onChange={handleUserProfileDescription}
-              value={userProfileDescription}
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.describe}
               required
             />
           </FormGroup>
         </Form.Row>
+        </div>
+        ))}
       </div>
     )
   }

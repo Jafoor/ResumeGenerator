@@ -1,129 +1,89 @@
 import {
-    Container,
     Form,
     Col,
     FormGroup,
     FormLabel,
     FormControl,
-    Button,
   } from "react-bootstrap";
-  import { useState } from "react";
+
+  import IconButton from '@material-ui/core/IconButton';
+  import RemoveIcon from '@material-ui/icons/Remove';
+  import AddIcon from '@material-ui/icons/Add';
+  
+  import { v4 as uuidv4 } from 'uuid';
+
+
 import React from 'react'
 
-const SocialMedia = () => {
+const SocialMedia = ({inputFields, setInputFields}) => {
 
-      // user profile website
-  const [userFirstProfileWebsite, SetUserFirstProfileWebsite] =
-  useState("GitHub");
-const handleFirstUserProfileWebsite = (e) => {
-  SetUserFirstProfileWebsite(e.target.value);
-};
-// user github profile
-const [userGitHubProfileName, SetUserGitHubProfileName] = useState("");
-const handleUserGitHubProfileName = (e) => {
-  SetUserGitHubProfileName(e.target.value);
-};
-// user profile website
-const [userSecondProfileWebsite, SetUserSecondProfileWebsite] =
-  useState("LinkedIn");
-const handleSecondUserProfileWebsite = (e) => {
-  SetUserSecondProfileWebsite(e.target.value);
-};
-// user LinkedIn profile
-const [userLinkedInProfileName, SetUserLinkedInProfileName] = useState("");
-const handleUserLinkedInProfileName = (e) => {
-  SetUserLinkedInProfileName(e.target.value);
-};
-// user profile website
-const [userThirdProfileWebsite, SetUserThirdProfileWebsite] =
-  useState("Personal Website");
-const handleThirdUserProfileWebsite = (e) => {
-  SetUserThirdProfileWebsite(e.target.value);
-};
-// user personal website link
-const [userPersonalWebsiteLink, setUserPersonalWebsiteLink] = useState("");
-const handleUserPersonalWebsiteLink = (e) => {
-  setUserPersonalWebsiteLink(e.target.value);
-};
+  const handleChangeInput = (id, event) => {
+    const newInputFields = inputFields.map(i => {
+      if(id === i.id) {
+        i[event.target.name] = event.target.value
+      }
+      return i;
+    })
+    
+    setInputFields(newInputFields);
+  }
+
+  const handleAddFields = () => {
+    setInputFields([...inputFields, { id: uuidv4(),  firstName: '', lastName: '' }])
+  }
+
+  const handleRemoveFields = id => {
+    const values  = [...inputFields];
+    values.splice(values.findIndex(value => value.id === id), 1);
+    setInputFields(values);
+  }
+
 
   return (
+
+    
     <div>
-        <h1 className="text-dark font-weight-bold py-4">Social Detail</h1>
+        <h1 className="text-dark font-weight-bold py-4">Social Details</h1>
+        { inputFields.map((inputField, index) => (
+          <div key={inputField.id}> 
         <Form.Row>
-          <FormGroup as={Col} sm={12} md={4}>
-            <FormLabel>Social Website</FormLabel>
+          <FormGroup as={Col} sm={12} md={6}>
+            <FormLabel>{index+1}{ (index === 0) ? "st " : (index === 1) ? "nd " : (index === 2) ? "rd " : "th "}Social Website</FormLabel>
             <FormControl
-              as="select"
-              onChange={handleFirstUserProfileWebsite}
-              value={userFirstProfileWebsite}
-              required
-            >
-              <option value="GitHub">GitHub</option>
-              <option value="LinkedIn">LinkedIn</option>
-              <option value="Personal Website">Portfolio Website</option>
-            </FormControl>
-          </FormGroup>
-          <FormGroup as={Col} sm={12} md={4}>
-            <FormLabel>Username</FormLabel>
-            <FormControl
+              name="socialwebsite"
               type="text"
-              placeholder="e.g johnDoe123"
-              onChange={handleUserGitHubProfileName}
-              value={userGitHubProfileName}
+              placeholder="e.g Github"
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.socialwebsite}
+              required
+            />
+          </FormGroup>
+          <FormGroup as={Col} sm={12} md={6}>
+            <FormLabel>Link</FormLabel>
+            <FormControl
+              name="socialwebsitelink"
+              type="text"
+              placeholder="e.g https://github.com/Jafoor"
+              onChange={event => handleChangeInput(inputField.id, event)}
+              value={inputField.socialwebsitelink}
               required
             />
           </FormGroup>
         </Form.Row>
-        <Form.Row>
-          <FormGroup as={Col} sm={12} md={4}>
-            <FormLabel>Social Website</FormLabel>
-            <FormControl
-              as="select"
-              onChange={handleSecondUserProfileWebsite}
-              value={userSecondProfileWebsite}
-              required
-            >
-              <option value="LinkedIn">LinkedIn</option>
-              <option value="GitHub">GitHub</option>
-              <option value="Portfolio Website">Portfolio Website</option>
-            </FormControl>
-          </FormGroup>
-          <FormGroup as={Col} sm={12} md={4}>
-            <FormLabel>Username</FormLabel>
-            <FormControl
-              type="text"
-              placeholder="e.g johnDoe123"
-              onChange={handleUserLinkedInProfileName}
-              value={userLinkedInProfileName}
-              required
-            />
-          </FormGroup>
-        </Form.Row>
-        <Form.Row>
-          <FormGroup as={Col} sm={12} md={4}>
-            <FormLabel>Social Website</FormLabel>
-            <FormControl
-              as="select"
-              onChange={handleThirdUserProfileWebsite}
-              value={userThirdProfileWebsite}
-              required
-            >
-              <option value="Portfolio Website">Portfolio Website</option>
-              <option value="GitHub">GitHub</option>
-              <option value="LinkedIn">LinkedIn</option>
-            </FormControl>
-          </FormGroup>
-          <FormGroup as={Col} sm={12} md={4}>
-            <FormLabel>Username</FormLabel>
-            <FormControl
-              type="text"
-              placeholder="johnDoe.com"
-              onChange={handleUserPersonalWebsiteLink}
-              value={userPersonalWebsiteLink}
-              required
-            />
-          </FormGroup>
-        </Form.Row>
+
+        <div className="text-center">
+        <IconButton disabled={inputFields.length === 1} onClick={() => handleRemoveFields(inputField.id)}>
+        <RemoveIcon />
+      </IconButton>
+      <IconButton
+        onClick={handleAddFields}
+      >
+        <AddIcon />
+      </IconButton>
+      </div>
+
+        </div>
+        ))}
     </div>
   )
 }
