@@ -12,10 +12,11 @@ import SocialMedia from "./socialMedia";
 import { EducationForm } from "./educationForm";
 import { ExperienceForm } from "./experienceForm";
 import { ExpertiseForm } from "./expertiseForm";
-
 import { v4 as uuidv4 } from 'uuid';
 
 const FormComponent = ({ history }) => {
+
+
 // gender:'', age:'', profession:'', permanentaddress:'', presentaddress:'', mobilenumber:'', email:'', describe:''
   const [eduInputFields, setEduInputFields] = useState([
     { id: uuidv4(), edutitle: '', edudegree:'', eduinstitute:'', edustart:'', eduend:'', edudescrib:'' },
@@ -48,10 +49,12 @@ const FormComponent = ({ history }) => {
                     skill: skillInputForm, 
                     experience:expInputFields}
     e.preventDefault();
-    console.log(body);
     const res = await axios
       .post("http://localhost:8800/api/resume/create", body);
-    console.log(res);
+    if(res.status === 200){
+      console.log(res);
+        history.push(`/view_resume/${res.data._id}`)
+    }
   };
   return (
     <Container className="mt-5 mb-2">

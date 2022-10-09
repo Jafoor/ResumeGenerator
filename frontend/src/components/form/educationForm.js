@@ -1,19 +1,17 @@
 import React from 'react'
 import {
-    Container,
     Form,
     Col,
     FormGroup,
     FormLabel,
     FormControl,
-    Button,
   } from "react-bootstrap";
 import IconButton from '@material-ui/core/IconButton';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
-import Icon from '@material-ui/core/Icon';
+
 import { v4 as uuidv4 } from 'uuid';
-  import { useState } from "react";
+
 
 export const EducationForm = ({inputFields, setInputFields}) => {
 

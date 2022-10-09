@@ -8,7 +8,7 @@ const Generate = async (req, res) => {
             education,
             skill,
             experience} = req.body;
-       console.log(`1`);
+
         const data = {
             generalinfo,
             socialMedia,
@@ -16,12 +16,10 @@ const Generate = async (req, res) => {
             skill,
             experience
             }
-        console.log(`11`);
-        console.log(data);
-        console.log(`2`);
+
         const newres = await Create(data);
-        console.log(newres);
-        return res.status(200).json("Resume has been created.");
+        
+        return res.status(200).json(newres);
     }catch(err){
         return res.status(404).json("Resume has not been created.");
     }

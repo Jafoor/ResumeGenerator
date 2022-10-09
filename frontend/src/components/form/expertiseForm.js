@@ -14,7 +14,6 @@ import AddIcon from '@material-ui/icons/Add';
 
 import { v4 as uuidv4 } from 'uuid';
 
-  import { useState } from "react";
 
 export const ExpertiseForm = ({inputFields, setInputFields}) => {
   const handleChangeInput = (id, event) => {
@@ -37,10 +36,7 @@ export const ExpertiseForm = ({inputFields, setInputFields}) => {
     values.splice(values.findIndex(value => value.id === id), 1);
     setInputFields(values);
   }
-  const [userSkills, setUserSkills] = useState("");
-  const handleUserSkills = (e) => {
-    setUserSkills(e.target.value);
-  };
+
   return (
     <div>
       <h1 className="text-dark font-weight-bold py-4">Social Details</h1>

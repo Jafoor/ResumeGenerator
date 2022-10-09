@@ -1,66 +1,72 @@
 import { useState, useEffect, Fragment } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import { FaLinkedin, FaGithubSquare } from "react-icons/fa";
-import { BiLink } from "react-icons/bi";
+
 import axios from "axios";
+
+import Printer, { print } from 'react-pdf-print'
+
+const ids = ['1']
 
 const ResumeComponent = ({ match }) => {
   const [userResumeData, setUserResumeData] = useState({});
   const [mounted, setMounted] = useState(false);
+  
   useEffect(() => {
     const fetchedData = async () => {
-      // "https://cv-generator-mern.herokuapp.com/api"
-      await axios
-        .get(`http://localhost:9999/api/${match.params.id}`)
-        .then((res) => {
-          if (res.data.success) {
-            setMounted(true);
-            setUserResumeData(res.data.resumeData);
-          }
-        });
+      try{
+        const res =  await axios
+        .get(`http://localhost:8800/api/resume/get/${match.params.id}`);
+
+        if(res.data){
+          
+          setUserResumeData(res.data);
+          setMounted(true);
+
+        }
+      }catch(err){
+        setMounted(false);
+      }
+      
     };
     fetchedData();
-  }, [match.params.id]);
+    
+  }, [match.params.id,mounted]);
 
   return (
     <Fragment>
       {mounted ? (
-        <Container className="mt-4 mb-2">
-          <main className="resume-section pl-4">
+        <div>
+        <Container id={ids[0]} className="mt-4 mb-2">
+          <Printer>
+          <main  className="resume-section pl-4">
+            <div  >
             <header>
               <Row className="border-bottom border-dark w-100">
                 <Col sm={12} md={6} className="py-4 px-4">
                   <h1 className="text-dark font-weight-bold">
-                    {userResumeData.userFirstName}
-                    {userResumeData.userSecondName}
+                    {userResumeData.generalinfo['0'].fname}
+                    {userResumeData.generalinfo['0'].lastname}
                   </h1>
                   <h6 className="h5 text-dark">
-                    {userResumeData.userProfession}
+                    {userResumeData.generalinfo['0'].profession}
                   </h6>
-                  <div className="w-25 d-flex justify-content-between user-social-icons">
-                    <a
-                      href={`https://www.linkedin.com/in/${userResumeData.userLinkedInProfileName}/`}
+                  <div className=" w-25 d-flex justify-content-between user-social-icons">
+                    
+                  { userResumeData.socialMedia.map((data, index) => (
+  <a
+  key={data.id}
+                      href={`${data.socialwebsitelink}`}
                       className="text-dark"
                     >
-                      <FaLinkedin />
-                    </a>
-                    <a
-                      href={userResumeData.userPersonalWebsiteLink}
-                      className="text-dark"
-                    >
-                      <BiLink />
-                    </a>
-                    <a
-                      href={`https://github.com/${userResumeData.userGitHubProfileName}`}
-                      className="text-dark"
-                    >
-                      <FaGithubSquare />
-                    </a>
+                      {data.socialwebsite}
+            </a>
+))}
+
                   </div>
                 </Col>
                 <Col sm={12} md={6}>
                   <p className="py-4 text-dark">
-                    {userResumeData.userProfileDescription}
+                    {userResumeData.generalinfo['0'].describe}
                   </p>
                 </Col>
               </Row>
@@ -75,17 +81,17 @@ const ResumeComponent = ({ match }) => {
                     <h6 className="font-weight-bold text-dark">
                       Email Address:
                     </h6>
-                    <p className="px-2">{userResumeData.userEmail}</p>
+                    <p className="px-2">{userResumeData.generalinfo['0'].email}</p>
                   </li>
                   <li className="d-flex align-items justify-content-start">
                     <h6 className="font-weight-bold text-dark">Location:</h6>
-                    <p className="px-2">{userResumeData.userLocation}</p>
+                    <p className="px-2">{userResumeData.generalinfo['0'].permanentaddress}</p>
                   </li>
                   <li className="d-flex align-items justify-content-start">
                     <h6 className="font-weight-bold text-dark">
                       Phone Number:
                     </h6>
-                    <p className="px-2">{userResumeData.userPhoneNumber}</p>
+                    <p className="px-2">{userResumeData.generalinfo['0'].mobilenumber}</p>
                   </li>
                 </ul>
               </Col>
@@ -95,15 +101,15 @@ const ResumeComponent = ({ match }) => {
                     <h6 className="font-weight-bold text-dark">
                       House Address:
                     </h6>
-                    <p className="px-2">{userResumeData.userHouseAddress}</p>
+                    <p className="px-2">{userResumeData.generalinfo['0'].presentaddress}</p>
                   </li>
                   <li className="d-flex align-items justify-content-start">
                     <h6 className="font-weight-bold text-dark">Age:</h6>
-                    <p className="px-2">{userResumeData.userAge}</p>
+                    <p className="px-2">{userResumeData.generalinfo['0'].age}</p>
                   </li>
                   <li className="d-flex align-items justify-content-start">
                     <h6 className="font-weight-bold text-dark">Gender:</h6>
-                    <p className="px-2">{userResumeData.userGender}</p>
+                    <p className="px-2">{userResumeData.generalinfo['0'].gender}</p>
                   </li>
                 </ul>
               </Col>
@@ -114,57 +120,26 @@ const ResumeComponent = ({ match }) => {
               </h1>
               <Col className="py-4">
                 <ul>
-                  <li>
+                { userResumeData.education.map((data, index) => (
+<li key={data.id}>
+
                     <h3 className="text-dark font-weight-bold">
                       1.
-                      {userResumeData.userHighSchoolDegreeName}
+                      {data.edudegree}
                     </h3>
                     <h6 className="text-dark font-weight-bold">
-                      {userResumeData.userHighSchoolName}
+                      {data.eduinstitute}
                     </h6>
                     <p className="text-dark font-weight-bold">
                       
-                      {userResumeData.userHighSchoolStartingDate}/
-                      {userResumeData.userHighSchoolEndingDate}
+                      {data.edustart}/
+                      {data.eduend}
                     </p>
                     <p className="text-dark font-weight-normal">
-                      {userResumeData.userHighSchoolExperience}
+                      {data.edudescrib}
                     </p>
-                  </li>
-                  <li>
-                    <h3 className="text-dark font-weight-bold">
-                      2.
-                      {userResumeData.userCollegeDegreeName}
-                    </h3>
-                    <h6 className="text-dark font-weight-bold">
-                      {userResumeData.userCollegeName}
-                    </h6>
-                    <p className="text-dark font-weight-bold">
-                      
-                      {userResumeData.userCollegeStartingDate}/
-                      {userResumeData.userCollegeEndingDate}
-                    </p>
-                    <p className="text-dark font-weight-normal">
-                      {userResumeData.userCollegeExperience}
-                    </p>
-                  </li>
-                  <li>
-                    <h3 className="text-dark font-weight-bold">
-                      3.
-                      {userResumeData.userBachelorDegreeName}
-                    </h3>
-                    <h6 className="text-dark font-weight-bold">
-                      {userResumeData.userUniversityName}
-                    </h6>
-                    <p className="text-dark font-weight-bold">
-                      
-                      {userResumeData.userBachelorStartingDate}/
-                      {userResumeData.userBachelorEndingDate}
-                    </p>
-                    <p className="text-dark font-weight-normal">
-                      {userResumeData.userUniversityExperience}
-                    </p>
-                  </li>
+          </li>
+))}
                 </ul>
               </Col>
             </Row>
@@ -174,74 +149,70 @@ const ResumeComponent = ({ match }) => {
               </h1>
               <Col className="py-4">
                 <ul>
-                  <li>
-                    <h3 className="text-dark font-weight-bold">
-                      1.
-                      {userResumeData.user1stExperience}
-                    </h3>
-                    <h6 className="text-dark font-weight-bold">
-                      {userResumeData.user1stCompanyName}
-                    </h6>
-                    <p className="text-dark font-weight-bold">
-                      
-                      {userResumeData.user1stExperienceStartingDate}/
-                      {userResumeData.user1stExperienceEndingDate}
-                    </p>
-                    <p className="text-dark font-weight-normal">
-                      {userResumeData.user1stCompanyExperience}
-                    </p>
-                  </li>
-                  <li>
-                    <h3 className="text-dark font-weight-bold">
-                      2.
-                      {userResumeData.user2ndExperience}
-                    </h3>
-                    <h6 className="text-dark font-weight-bold">
-                      {userResumeData.user2ndCompanyName}
-                    </h6>
-                    <p className="text-dark font-weight-bold">
-                      
-                      {userResumeData.user2ndExperienceStartingDate}/
-                      {userResumeData.user2ndExperienceEndingDate}
-                    </p>
-                    <p className="text-dark font-weight-normal">
-                      {userResumeData.user2ndCompanyExperience}
-                    </p>
-                  </li>
-                  <li>
-                    <h3 className="text-dark font-weight-bold">
-                      3.
-                      {userResumeData.user3rdExperience}
-                    </h3>
-                    <h6 className="text-dark font-weight-bold">
-                      {userResumeData.user3rdCompanyName}
-                    </h6>
-                    <p className="text-dark font-weight-bold">
-                      
-                      {userResumeData.user3rdExperienceStartingDate}/
-                      {userResumeData.user3rdExperienceEndingDate}
-                    </p>
-                    <p className="text-dark font-weight-normal">
-                      {userResumeData.user3rdCompanyExperience}
-                    </p>
-                  </li>
+                  
+{ userResumeData.experience.map((data, index) => (
+  <li key={data.id}>
+  <h3 className="text-dark font-weight-bold">
+    {index + 1}
+    {data.exptitle}
+  </h3>
+  <h6 className="text-dark font-weight-bold">
+    {data.expcompany}
+  </h6>
+  <p className="text-dark font-weight-bold">
+    
+    {data.expstart}/
+    {data.expend}
+  </p>
+  <p className="text-dark font-weight-normal">
+    {data.expdescrib}
+  </p>
+</li>
+
+
+))}
                 </ul>
               </Col>
             </Row>
-            <Row>
-              <h1 className="w-100"> Hands On Skills </h1>
-              <p>{userResumeData.userSkills}</p>
+            <Row className="w-100">
+            <h1 className="text-center text-dark w-100 pt-4 font-weight-bold">
+                Hands on Skill
+              </h1>
+              <Col className="py-4">
+              <ul>
+              { userResumeData.skill.map((data, index) => (
+
+  <li key={data.id}>
+    <h6 className="font-weight-bold text-dark">
+                      {data.skilltype}:
+                    </h6>
+                    <p className="px-2">{data.skillsets}</p>
+</li>
+
+))}
+</ul>
+</Col>
             </Row>
+            </div>
           </main>
-          <Button
-            variant="dark"
+          </Printer>
+          
+        </Container>
+        <div className="d-grid gap-2 col-6 mx-auto">
+        <Button
+            variant="success"
             as={Col}
-            sm={12}
-            className="py-2 my-3 text-white font-weight-bold"
+            sm={2}
+            className="  py-2 my-3 text-white font-weight-bold text-center"
+            onClick={() => print(ids)}
+            value='Stampa'
           >
             Print
           </Button>
-        </Container>
+
+        </div>
+        
+        </div>
       ) : (
         "Loading....."
       )}
