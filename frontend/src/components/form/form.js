@@ -49,8 +49,10 @@ const FormComponent = ({ history }) => {
                     skill: skillInputForm, 
                     experience:expInputFields}
     e.preventDefault();
+    console.log(body);
     const res = await axios
       .post("http://localhost:8800/api/resume/create", body);
+    console.log(res);
     if(res.status === 200){
       console.log(res);
         history.push(`/view_resume/${res.data._id}`)

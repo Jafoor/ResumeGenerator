@@ -16,7 +16,6 @@ import { v4 as uuidv4 } from 'uuid';
 export const EducationForm = ({inputFields, setInputFields}) => {
 
   const handleChangeInput = (id, event) => {
-    console.log(id, event.target);
     const newInputFields = inputFields.map(i => {
       if(id === i.id) {
         i[event.target.name] = event.target.value

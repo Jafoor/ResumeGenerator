@@ -3,6 +3,8 @@ import { Create } from "../models/resume.js";
 const Generate = async (req, res) => {
     try{
         // console.log(req.body);
+        const cookieHeader = request.headers?.cookie;
+        console.log(1);
         const {generalinfo,
             socialMedia,
             education,
