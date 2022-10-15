@@ -4,19 +4,27 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import axios from "axios";
 
 import Printer, { print } from 'react-pdf-print'
+import { authAxios } from "../../api/authAxios";
 
 const ids = ['1']
 
-const ResumeComponent = ({ match }) => {
+const ResumeComponent = ({ match, history }) => {
   const [userResumeData, setUserResumeData] = useState({});
   const [mounted, setMounted] = useState(false);
   
   useEffect(() => {
     const fetchedData = async () => {
       try{
-        const res =  await axios
-        .get(`http://localhost:8800/api/resume/get/${match.params.id}`);
+        const token = localStorage.getItem('token');
+        const config = {
+          headers: { token: `Bearer ${token}` }
+      };
+        const res =  await authAxios
+        .get(`http://localhost:8080/api/resume/get/${match.params.id}`, config);
 
+        if(res.status !== 200){
+          history.push("/logout")
+        }
         if(res.data){
           
           setUserResumeData(res.data);

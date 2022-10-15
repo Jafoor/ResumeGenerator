@@ -1,7 +1,9 @@
 import { Get } from "../models/getresume.js";
 
+
 const GetResume = async (req, res) => {
     try{
+        console.log(req.headers);
         const { id } = req.params;
         const response = await Get(id);
 

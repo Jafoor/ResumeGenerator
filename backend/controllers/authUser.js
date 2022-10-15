@@ -2,29 +2,27 @@ import { UserExist, CreateUser } from "../models/users.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const jwtKey = "my_secret_key"
-const jwtExpirySeconds = 3000
+const jwtKey = process.env.jwtKey
+const jwtExpirySeconds = process.env.jwtExpirySeconds
 
 export const SignUp = async (req, res) => {
     try{
         const { name, email, password } = req.body;
-        console.log(req.body);
+
         const userExist = await UserExist(email);
         if (userExist) {
             throw { message: "Email address already registered" };
         }
-        console.log(userExist);
+
         var salt = bcrypt.genSaltSync(10);
         var hashedpassword = bcrypt.hashSync(password, salt);
-        console.log(`1`);
         console.log(hashedpassword);
-        console.log(`2`);
+
         const newUser = await CreateUser({
             name,
             email,
             password:hashedpassword
           });
-          console.log(3);
         
           res.status(200).json("User has been created.")   
 
@@ -45,16 +43,16 @@ export const SignIn = async (req, res) =>{
 
         console.log(userExist);
         if(bcrypt.compareSync(password, userExist.password)){
-                const token = jwt.sign({ email }, jwtKey, {
+                const token = jwt.sign({ email, id: userExist._id }, jwtKey, {
                 algorithm: "HS256",
-                expiresIn: jwtExpirySeconds,
+                expiresIn: '12h',
             });
 
             console.log(token);
 
-            res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 });
-
-            res.status(200).json({message: "User has been created."})
+            res.status(200).json({message: "User has been created.",
+                                token
+        })
         }
         else{
             throw{ message: "Incorrect Password"}

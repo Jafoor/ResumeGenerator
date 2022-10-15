@@ -1,5 +1,5 @@
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Link } from 'react-router-dom';
 import axios from "axios";
 const Auth = ( { history } ) => {
@@ -12,6 +12,13 @@ const Auth = ( { history } ) => {
   const [InputFields, setInputFields] = useState(
     { name: '', email:'', password:'' }
   );
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if(token && token !== 'undefined'){
+      history.push('/');
+    }
+  }, [])
   
   const handleChangeInput = (e) => {
     setInputFields({...InputFields,  [e.target.name] : e.target.value});
@@ -23,14 +30,15 @@ const Auth = ( { history } ) => {
     e.preventDefault();
     if(authMode === "signin"){
           const res = await axios
-          .post("http://localhost:8800/api/auth/signin", InputFields);
+          .post("http://localhost:8080/api/auth/signin", InputFields);
 
         if(res.status === 200){
+          localStorage.setItem("token", res.data.token);
           history.push(`/`);
         }
     }else{
       const res = await axios
-          .post("http://localhost:8800/api/auth/signup", InputFields);
+          .post("http://localhost:8080/api/auth/signup", InputFields);
 
         if(res.status === 200){
           setAuthMode("signin");

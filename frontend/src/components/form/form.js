@@ -5,19 +5,18 @@ import {
   Button,
 } from "react-bootstrap";
 import { useState } from "react";
-// import { Link } from "react-router-dom";
-import axios from "axios";
+
 import GeneralForm from "./generalForm";
 import SocialMedia from "./socialMedia";
 import { EducationForm } from "./educationForm";
 import { ExperienceForm } from "./experienceForm";
 import { ExpertiseForm } from "./expertiseForm";
 import { v4 as uuidv4 } from 'uuid';
+import { authAxios } from "../../api/authAxios";
+
 
 const FormComponent = ({ history }) => {
 
-
-// gender:'', age:'', profession:'', permanentaddress:'', presentaddress:'', mobilenumber:'', email:'', describe:''
   const [eduInputFields, setEduInputFields] = useState([
     { id: uuidv4(), edutitle: '', edudegree:'', eduinstitute:'', edustart:'', eduend:'', edudescrib:'' },
   ]);
@@ -39,8 +38,6 @@ const FormComponent = ({ history }) => {
   ])
 
 
-
-  // sum up all the information into one object
   const handleUserResumeData = async (e) => {
     const body = {
                     generalinfo:generalInputField,
@@ -49,14 +46,22 @@ const FormComponent = ({ history }) => {
                     skill: skillInputForm, 
                     experience:expInputFields}
     e.preventDefault();
-    console.log(body);
-    const res = await axios
-      .post("http://localhost:8800/api/resume/create", body);
-    console.log(res);
-    if(res.status === 200){
-      console.log(res);
-        history.push(`/view_resume/${res.data._id}`)
+
+    try{
+  
+      const res = await authAxios
+      .post("http://localhost:8080/api/resume/create", body);
+      if(res.status !== 200){
+        history.push("/louout")
+      }
+      if(res.status === 200){
+          history.push(`/view_resume/${res.data._id}`)
+      }
+  }catch(err){
+console.log(err);
     }
+    
+    
   };
   return (
     <Container className="mt-5 mb-2">
